@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#101827">
+<title>EduMind — Rudra AI</title>
+<style>
+*{box-sizing:border-box}
+:root{--bg:#0b1020;--panel:#111a2e;--panel2:#17223b;--text:#eef2ff;--muted:#9aa8c7;--line:#263451;--accent:#6d7cff;--green:#28d7a3;--danger:#ff637b}
+body.light{--bg:#f4f7fb;--panel:#fff;--panel2:#eef2ff;--text:#142033;--muted:#667085;--line:#dbe2ef}
+html,body{margin:0;min-height:100%;width:100%;overflow-x:hidden;font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;background:var(--bg);color:var(--text)}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer;border:0;touch-action:manipulation}
+button,.btn{min-height:44px}
+input,select,textarea{font-size:16px}
+.app{max-width:1450px;margin:auto;min-height:100vh}
+.top{height:72px;padding:12px 18px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 90%,transparent);backdrop-filter:blur(16px)}
+.brand{display:flex;gap:11px;align-items:center}.logo{width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,var(--accent),#9a55ff);display:grid;place-items:center;font-size:23px}.brand b{font-size:19px}.brand small{display:block;color:var(--muted)}
+.top-actions{display:flex;gap:8px}.icon{width:44px;border-radius:13px;background:var(--panel2);color:var(--text);border:1px solid var(--line)}
+.layout{display:grid;grid-template-columns:230px 1fr;min-height:calc(100vh - 72px)}
+aside{border-right:1px solid var(--line);padding:16px;position:sticky;top:72px;height:calc(100vh - 72px)}
+.nav{display:grid;gap:7px}.nav button{padding:12px;border-radius:12px;text-align:left;background:transparent;color:var(--muted)}.nav button.active,.nav button:hover{background:var(--panel2);color:var(--text)}
+main{padding:24px;max-width:1050px;width:100%;margin:auto}.page{display:none}.page.active{display:block}
+.hero{padding:28px;border:1px solid var(--line);border-radius:26px;background:linear-gradient(135deg,#182449,#111a2e 55%,#162d35);overflow:hidden;position:relative}.hero h1{font-size:clamp(28px,5vw,48px);margin:8px 0}.hero p{color:#b7c3df;max-width:700px;line-height:1.6}
+.pill{display:inline-flex;padding:7px 11px;border-radius:99px;background:#ffffff10;border:1px solid #ffffff18;color:#bfcaff;font-size:13px}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:16px}.card,.box{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:16px}.stat b{font-size:25px}.muted{color:var(--muted)}.section{margin-top:18px}
+.solver{display:grid;grid-template-columns:1fr 300px;gap:14px}.subjects{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.subject{padding:12px;border-radius:12px;background:var(--panel2);color:var(--muted);border:1px solid transparent}.subject.active{border-color:var(--accent);color:var(--text)}
+textarea{width:100%;min-height:145px;resize:vertical;padding:14px;border-radius:15px;background:var(--panel2);color:var(--text);border:1px solid var(--line);outline:0}
+input,select{width:100%;padding:12px;border-radius:12px;border:1px solid var(--line);background:var(--panel2);color:var(--text);outline:0}
+textarea:focus,input:focus,select:focus{border-color:var(--accent)}
+.controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.btn{padding:11px 14px;border-radius:12px;background:var(--panel2);color:var(--text);border:1px solid var(--line)}.primary{background:linear-gradient(135deg,var(--accent),#8558f6);color:#fff;border:0;font-weight:700}.green{background:var(--green);color:#061a15;font-weight:700}.danger{background:#ff637b18;color:#ff9aaa}
+.answer{margin-top:14px;line-height:1.65}.bubble{background:var(--panel2);padding:16px;border-radius:16px;border:1px solid var(--line);white-space:pre-wrap}
+.row{display:flex;gap:10px;align-items:center;justify-content:space-between}.list{display:grid;gap:10px}.item{padding:14px;background:var(--panel);border:1px solid var(--line);border-radius:15px}.item b{display:block;margin-bottom:5px}.item small{color:var(--muted)}
+label{display:block;color:var(--muted);font-size:13px;margin:12px 0 6px}
+.auth{position:fixed;inset:0;z-index:100;background:#050817ee;display:grid;place-items:center;padding:18px}.auth.hidden{display:none}.hidden{display:none!important}.authbox{width:min(480px,100%);max-height:92vh;overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:25px;padding:23px;box-shadow:0 25px 100px #0008}
+.tabs{display:flex;background:var(--panel2);padding:4px;border-radius:12px;margin:15px 0}.tabs button{flex:1;padding:10px;border-radius:9px;background:transparent;color:var(--muted)}.tabs button.active{background:var(--panel);color:var(--text)}
+.scanner{display:grid;grid-template-columns:1fr 1fr;gap:14px}.camera{min-height:270px;background:#05070d;border-radius:18px;display:grid;place-items:center;overflow:hidden;border:1px solid var(--line)}video,img.preview{width:100%;max-height:430px;object-fit:contain}.preview{border-radius:15px}
+.toast{position:fixed;bottom:20px;right:20px;padding:12px 16px;border-radius:12px;background:var(--panel2);border:1px solid var(--line);z-index:200;transform:translateY(120px);transition:.25s}.toast.show{transform:none}
+.bottom{display:none}
+@media(max-width:900px){.layout{grid-template-columns:1fr}aside{display:none}.bottom{position:fixed;display:flex;bottom:0;left:0;right:0;background:color-mix(in srgb,var(--bg) 94%,transparent);border-top:1px solid var(--line);z-index:30;padding:7px;justify-content:space-around}.bottom button{background:transparent;color:var(--muted);font-size:12px;min-width:58px}.bottom button span{display:block;font-size:20px}.grid{grid-template-columns:repeat(2,1fr)}.solver,.scanner{grid-template-columns:1fr}main{padding:15px;padding-bottom:84px}.subjects{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:480px){.hero{padding:20px}.grid{grid-template-columns:1fr 1fr}.brand small{display:none}.top{padding:10px 12px}}
+@media(pointer:coarse){button,.btn{min-height:48px}input,textarea,select{min-height:48px}}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="top">
+<div class="brand"><div class="logo">🤖</div><div><b>EduMind</b><small>Rudra AI • Class 1–10</small></div></div>
+<div class="top-actions"><button class="icon" id="themeBtn">☀️</button><button class="icon" id="logoutBtn">↪</button></div>
+</header>
+
+<div class="layout">
+<aside><nav class="nav">
+<button class="active" data-page="home">🏠 Dashboard</button>
+<button data-page="solver">🧠 Doubt Solver</button>
+<button data-page="scan">📸 Scan Question</button>
+<button data-page="history">🕘 History</button>
+<button data-page="saved">⭐ Saved</button>
+<button data-page="settings">⚙️ Settings</button>
+</nav></aside>
+
+<main>
+<section id="home" class="page active">
+<div class="hero"><span class="pill">✨ AI Study Assistant</span><h1>Meet Rudra AI.</h1><p>Ask questions, scan homework, speak your doubt, and get class-level explanations in English, Hindi, or Hinglish.</p><button class="btn primary" onclick="go('solver')">Ask Rudra →</button></div>
+<div class="grid">
+<div class="card stat"><span class="muted">Doubts solved</span><br><b id="statSolved">0</b></div>
+<div class="card stat"><span class="muted">Saved</span><br><b id="statSaved">0</b></div>
+<div class="card stat"><span class="muted">Class</span><br><b id="statClass">—</b></div>
+<div class="card stat"><span class="muted">Streak</span><br><b>1 🔥</b></div>
+</div>
+<div class="section card"><h3>🚀 Quick tools</h3><div class="controls">
+<button class="btn" onclick="go('solver');setSubject('Maths')">📐 Maths</button>
+<button class="btn" onclick="go('solver');setSubject('Science')">🔬 Science</button>
+<button class="btn" onclick="go('solver');setSubject('English')">🔤 English</button>
+<button class="btn" onclick="go('scan')">📸 Scan Photo</button>
+<button class="btn" onclick="startVoice()">🎤 Voice</button>
+</div></div>
+</section>
+
+<section id="solver" class="page">
+<h1>🧠 Doubt Solver</h1><p class="muted">Choose a subject so Rudra knows how to explain it.</p>
+<div class="solver"><div class="box">
+<h3>Subject</h3><div class="subjects" id="subjects"></div>
+<label>Explanation mode</label><select id="mode"><option>Step-by-step</option><option>Simple</option><option>Hint</option><option>Exam answer</option></select>
+<label>Your question</label><textarea id="question" placeholder="Example: Solve 2x + 5 = 17"></textarea>
+<div class="controls"><button class="btn" onclick="document.getElementById('photoInput').click()">🖼️ Photo</button><button class="btn" onclick="startVoice()">🎤 Voice</button><button class="btn primary" id="solveBtn" onclick="solve()">✨ Rudra Solve</button><span id="aiBadge" class="pill">Local mode</span></div>
+<input hidden type="file" id="photoInput" accept="image/*"><div id="photoStatus" class="muted"></div><div class="answer" id="answer"></div>
+</div>
+<div class="box"><h3>🎯 Learning setup</h3><p>Class: <b id="sideClass">—</b></p><p>Medium: <b id="sideMedium">—</b></p><p>Language: <b id="sideLang">—</b></p></div></div>
+</section>
+
+<section id="scan" class="page">
+<h1>📸 Scan Question</h1><p class="muted">Use your camera or choose a photo.</p>
+<div class="scanner"><div class="box"><div class="camera" id="camera"><span class="muted">Camera preview</span></div>
+<div class="controls"><button class="btn green" onclick="openCamera()">Open Camera</button><button class="btn" onclick="document.getElementById('scanInput').click()">Choose Photo</button><button class="btn" onclick="capture()">Capture</button><button class="btn danger" onclick="stopCamera()">Stop</button></div>
+<input hidden type="file" id="scanInput" accept="image/*" capture="environment"><button class="btn primary" style="margin-top:10px;width:100%" onclick="useScan()">Read & Solve Photo</button></div>
+<div class="box"><h3>Preview</h3><img id="scanPreview" class="preview" alt=""><p id="scanInfo" class="muted">No image selected.</p></div></div>
+</section>
+
+<section id="history" class="page"><h1>🕘 History</h1><p class="muted">Solved questions stored on this device.</p><div class="list" id="historyList"></div></section>
+<section id="saved" class="page"><h1>⭐ Saved Answers</h1><p class="muted">Saved answers stored on this device.</p><div class="list" id="savedList"></div></section>
+
+<section id="settings" class="page">
+<h1>⚙️ Settings</h1>
+<div class="box">
+<label>Name</label><input id="setName">
+<label>Class</label><select id="setClass"></select>
+<label>School medium</label><select id="setMedium"><option>English Medium</option><option>Hindi Medium</option><option>Hinglish</option></select>
+<label>Answer language</label><select id="setLang"><option>English</option><option>Hindi</option><option>Hinglish</option></select>
+<div class="controls"><button class="btn primary" onclick="saveSettings()">Save learning setup</button><button class="btn danger" onclick="logout()">Logout</button><button class="btn danger" onclick="clearAll()">Clear local data</button></div>
+</div>
+</section>
+</main></div>
+
+<div class="bottom">
+<button onclick="go('home')"><span>🏠</span>Home</button><button onclick="go('solver')"><span>🧠</span>Ask</button><button onclick="go('scan')"><span>📸</span>Scan</button><button onclick="go('history')"><span>🕘</span>History</button><button onclick="go('settings')"><span>⚙️</span>Settings</button>
+</div>
+
+<div class="auth" id="auth">
+<div class="authbox">
+<div class="brand"><div class="logo">🤖</div><div><b>EduMind AI</b><small>Firebase Login</small></div></div>
+<div class="tabs"><button class="active" id="loginTab" onclick="authTab('login')">Login</button><button id="signupTab" onclick="authTab('signup')">New account</button></div>
+<div id="firebaseMessage" class="muted" style="min-height:20px;margin:8px 0"></div>
+<div id="loginForm">
+<label>Email</label><input id="loginEmail" type="email" autocomplete="email" placeholder="your@email.com">
+<label>Password</label><input id="loginPass" type="password" autocomplete="current-password" placeholder="Password">
+<button class="btn primary" style="width:100%;margin-top:15px" onclick="login()">Login</button>
+<button class="btn" style="width:100%;margin-top:8px" onclick="guest()">Continue as Guest</button>
+</div>
+<div id="signupForm" style="display:none">
+<label>Email</label><input id="newEmail" type="email" autocomplete="email" placeholder="your@email.com">
+<label>Password</label><input id="newPass" type="password" autocomplete="new-password" placeholder="Minimum 6 characters">
+<label>Name</label><input id="newName" placeholder="Your name">
+<label>Class</label><select id="newClass"></select>
+<label>School medium</label><select id="newMedium"><option>English Medium</option><option>Hindi Medium</option><option>Hinglish</option></select>
+<label>Answer language</label><select id="newLang"><option>English</option><option>Hindi</option><option>Hinglish</option></select>
+<button class="btn primary" style="width:100%;margin-top:15px" onclick="signup()">Create account</button>
+</div>
+</div></div>
+<div class="toast" id="toast"></div>
+
+<script src="https://www.gstatic.com/firebasejs/12.19.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.19.0/firebase-auth-compat.js"></script>
+<script>
+const firebaseConfig={
+ apiKey:"AIzaSyA-I8Deqo42XybUnvTKiCL-72d23aZcwRc",
+ authDomain:"edu-mind-rudra-ai.firebaseapp.com",
+ projectId:"edu-mind-rudra-ai",
+ storageBucket:"edu-mind-rudra-ai.firebasestorage.app",
+ messagingSenderId:"435205077652",
+ appId:"1:435205077652:web:0bb1b7b819fffdb360d281",
+ measurementId:"G-G3VKZJ0RZD"
+};
+let rudraFirebaseAuth=null;
+try{
+ if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+ rudraFirebaseAuth=firebase.auth();
+ window.rudraFirebaseAuth=rudraFirebaseAuth;
+}catch(e){
+ window.rudraFirebaseError=e;
+}
+</script>
+
+<script>
+const $=id=>document.getElementById(id);
+const classes=Array.from({length:10},(_,i)=>i+1);
+const subjects=['Maths','Science','English','Hindi','SST','Computer','General'];
+let profile=JSON.parse(localStorage.getItem('rudra_profile')||'null');
+let history=JSON.parse(localStorage.getItem('rudra_history')||'[]');
+let saved=JSON.parse(localStorage.getItem('rudra_saved')||'[]');
+let selected='Maths',selectedFile=null,stream=null;
+
+function toast(m){$('toast').textContent=m;$('toast').classList.add('show');clearTimeout(window._toast);window._toast=setTimeout(()=>$('toast').classList.remove('show'),2600)}
+function fillClasses(){['newClass','setClass'].forEach(id=>$(id).innerHTML=classes.map(c=>`<option value="${c}">Class ${c}</option>`).join(''))}
+function authTab(t){$('loginForm').style.display=t==='login'?'block':'none';$('signupForm').style.display=t==='signup'?'block':'none';$('loginTab').classList.toggle('active',t==='login');$('signupTab').classList.toggle('active',t==='signup')}
+function authMessage(m){$('firebaseMessage').textContent=m||''}
+function firebaseErrorMessage(e){
+ const c=e?.code||'';
+ const map={'auth/invalid-credential':'Email ya password galat hai.','auth/wrong-password':'Email ya password galat hai.','auth/user-not-found':'Account nahi mila.','auth/email-already-in-use':'Is email ka account already hai.','auth/invalid-email':'Email address sahi nahi hai.','auth/weak-password':'Password kam se kam 6 characters ka hona chahiye.','auth/network-request-failed':'Internet connection check karo.','auth/operation-not-allowed':'Firebase Console me Email/Password sign-in enable karo.'};
+ return map[c]||e?.message||'Firebase error aaya.';
+}
+function saveProfile(){
+ localStorage.setItem('rudra_profile',JSON.stringify(profile));
+ if(!profile)return;
+ $('setName').value=profile.name||'';
+ $('setClass').value=profile.classNumber||6;
+ $('setMedium').value=profile.medium||'English Medium';
+ $('setLang').value=profile.language||'English';
+ $('statClass').textContent=profile.classNumber||'—';
+ $('sideClass').textContent=profile.classNumber||'—';
+ $('sideMedium').textContent=profile.medium||'—';
+ $('sideLang').textContent=profile.language||'—';
+}
+function guest(){
+ profile={...profile,name:profile?.name||'Guest Student',classNumber:profile?.classNumber||6,medium:profile?.medium||'English Medium',language:profile?.language||'English',goal:profile?.goal||'General Study',guest:true};
+ saveProfile();$('auth').classList.add('hidden');toast('Guest mode ready');
+}
+async function signup(){
+ const email=$('newEmail').value.trim(),pass=$('newPass').value;
+ if(!email||pass.length<6)return authMessage('Valid email aur minimum 6 character password enter karo.');
+ if(!rudraFirebaseAuth)return authMessage('Firebase load nahi hua. Internet check karke refresh karo.');
+ authMessage('Creating account…');
+ try{
+  const cred=await rudraFirebaseAuth.createUserWithEmailAndPassword(email,pass);
+  profile={...profile,name:$('newName').value.trim()||'Student',classNumber:+$('newClass').value,medium:$('newMedium').value,language:$('newLang').value,goal:'General Study',email:cred.user.email,guest:false};
+  saveProfile();$('auth').classList.add('hidden');toast('Account created successfully.');
+ }catch(e){authMessage(firebaseErrorMessage(e))}
+}
+async function login(){
+ const email=$('loginEmail').value.trim(),pass=$('loginPass').value;
+ if(!email||!pass)return authMessage('Email aur password dono bharo.');
+ if(!rudraFirebaseAuth)return authMessage('Firebase load nahi hua. Internet check karke refresh karo.');
+ authMessage('Logging in…');
+ try{
+  const cred=await rudraFirebaseAuth.signInWithEmailAndPassword(email,pass);
+  profile={...profile,email:cred.user.email,guest:false,name:profile?.name||cred.user.email.split('@')[0],classNumber:profile?.classNumber||6,medium:profile?.medium||'English Medium',language:profile?.language||'English',goal:profile?.goal||'General Study'};
+  saveProfile();$('auth').classList.add('hidden');toast('Welcome back!');
+ }catch(e){authMessage(firebaseErrorMessage(e))}
+}
+async function logout(){try{if(rudraFirebaseAuth)await rudraFirebaseAuth.signOut()}catch(e){}localStorage.removeItem('rudra_profile');location.reload()}
+function clearAll(){if(confirm('Clear profile, history and saved answers from this browser?')){localStorage.clear();location.reload()}}
+function saveSettings(){profile={...profile,name:$('setName').value.trim()||'Student',classNumber:+$('setClass').value,medium:$('setMedium').value,language:$('setLang').value};saveProfile();toast('Learning setup saved.')}
+function go(page){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));$(page).classList.add('active');document.querySelectorAll('[data-page]').forEach(x=>x.classList.toggle('active',x.dataset.page===page));if(page==='history')renderHistory();if(page==='saved')renderSaved();scrollTo({top:0,behavior:'smooth'})}
+function renderSubjects(){$('subjects').innerHTML=subjects.map(s=>`<button class="subject ${s===selected?'active':''}" onclick="setSubject('${s}')">${s}</button>`).join('')}
+function setSubject(s){selected=s;renderSubjects()}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]))}
+function localSolve(q){
+ const cls=profile?.classNumber||6;
+ if(selected==='Maths'){
+  const m=q.match(/(-?\d+)\s*([+\-×x*/])\s*(-?\d+)/);
+  if(m){const a=+m[1],op=m[2],b=+m[3],r=op==='+'?a+b:op==='-'?a-b:op==='×'||op==='x'?a*b:a/b;return `Rudra AI — Maths\n\nClass ${cls}\n\nStep 1: Identify the operation.\nStep 2: ${a} ${op} ${b} = ${r}\n\nAnswer: ${r}`;}
+ }
+ return `Rudra AI — ${selected}\n\nSend the complete question. AI connection will be added after the Firebase/login system is confirmed working.`;
+}
+async function solve(){
+ const q=$('question').value.trim();
+ if(!q&&!selectedFile)return toast('Type a question or choose a photo.');
+ const btn=$('solveBtn');
+ btn.disabled=true;
+ btn.textContent='⏳ Solving...';
+ $('answer').innerHTML='<div class="bubble">🤖 Rudra AI is thinking...</div>';
+ try{
+  const response=await fetch('https://edumind-backend-71oq.onrender.com/api/ask',{
+   method:'POST',
+   headers:{'Content-Type':'application/json'},
+   body:JSON.stringify({question:q||'Please explain this question from the uploaded photo.'})
+  });
+  const data=await response.json();
+  if(!response.ok)throw new Error(data.error||'AI request failed.');
+  const ans=data.answer||'AI did not return an answer.';
+  $('answer').innerHTML=`<div class="bubble">${esc(ans)}</div><div class="controls"><button class="btn" onclick="speakLast()">🔊 Read aloud</button><button class="btn" onclick="copyLast()">📋 Copy</button><button class="btn green" onclick="saveLast()">⭐ Save</button></div>`;
+  window.lastAnswer=ans;
+  window.lastQuestion=q||selectedFile?.name||'Photo question';
+  history.unshift({q:window.lastQuestion,a:ans,subject:selected,time:new Date().toLocaleString()});
+  history=history.slice(0,100);
+  localStorage.setItem('rudra_history',JSON.stringify(history));
+  updateStats();
+ }catch(e){
+  $('answer').innerHTML='<div class="bubble">❌ '+esc(e.message)+'</div>';
+ }finally{
+  btn.disabled=false;
+  btn.textContent='✨ Rudra Solve';
+ }
+}
+function saveLast(){if(!window.lastAnswer)return;saved.unshift({q:window.lastQuestion,a:window.lastAnswer,subject:selected,time:new Date().toLocaleString()});saved=saved.slice(0,100);localStorage.setItem('rudra_saved',JSON.stringify(saved));updateStats();toast('Saved!')}
+function copyLast(){if(window.lastAnswer&&navigator.clipboard)navigator.clipboard.writeText(window.lastAnswer).then(()=>toast('Copied'))}
+function speakLast(){if(window.lastAnswer&&window.speechSynthesis){speechSynthesis.cancel();speechSynthesis.speak(new SpeechSynthesisUtterance(window.lastAnswer))}}
+function startVoice(){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR)return toast('Voice input is not supported here.');const r=new SR();r.lang=profile?.language==='Hindi'?'hi-IN':'en-IN';r.onstart=()=>toast('Listening…');r.onresult=e=>$('question').value=e.results[0][0].transcript;r.onerror=()=>toast('Voice input stopped.');r.start()}
+$('photoInput').onchange=e=>{selectedFile=e.target.files[0]||null;$('photoStatus').textContent=selectedFile?'📷 '+selectedFile.name+' selected.':''}
+$('scanInput').onchange=e=>{const f=e.target.files[0];if(f){selectedFile=f;showScan(f)}}
+function showScan(f){$('scanPreview').src=URL.createObjectURL(f);$('scanInfo').textContent='Selected: '+f.name}
+async function openCamera(){try{stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}},audio:false});$('camera').innerHTML='<video id="camVideo" autoplay playsinline></video>';$('camVideo').srcObject=stream}catch(e){toast('Camera permission/HTTPS is required.')}}
+function stopCamera(){if(stream){stream.getTracks().forEach(t=>t.stop());stream=null}$('camera').innerHTML='<span class="muted">Camera stopped</span>'}
+function capture(){const v=$('camVideo');if(!v)return toast('Open camera first.');const c=document.createElement('canvas');c.width=v.videoWidth;c.height=v.videoHeight;c.getContext('2d').drawImage(v,0,0);c.toBlob(b=>{selectedFile=new File([b],'camera-question.jpg',{type:'image/jpeg'});showScan(selectedFile);toast('Photo captured.')},'image/jpeg',.9)}
+function useScan(){if(!selectedFile)return toast('Choose or capture a photo first.');go('solver');$('photoStatus').textContent='📸 Scan ready: '+selectedFile.name}
+function renderHistory(){$('historyList').innerHTML=history.length?history.map((x,i)=>`<div class="item"><b>${esc(x.q)}</b><small>${x.subject} • ${x.time}</small><div class="controls"><button class="btn" onclick="reuse(${i})">Open</button><button class="btn danger" onclick="delHistory(${i})">Delete</button></div></div>`).join(''):'<div class="card muted">No questions yet.</div>'}
+function renderSaved(){$('savedList').innerHTML=saved.length?saved.map((x,i)=>`<div class="item"><b>${esc(x.q)}</b><small>${x.subject} • ${x.time}</small><p class="muted">${esc(x.a.slice(0,240))}${x.a.length>240?'…':''}</p><button class="btn danger" onclick="saved.splice(${i},1);localStorage.setItem('rudra_saved',JSON.stringify(saved));renderSaved();updateStats()">Remove</button></div>`).join(''):'<div class="card muted">No saved answers yet.</div>'}
+function reuse(i){$('question').value=history[i].q;setSubject(history[i].subject);go('solver')}
+function delHistory(i){history.splice(i,1);localStorage.setItem('rudra_history',JSON.stringify(history));renderHistory();updateStats()}
+function updateStats(){$('statSolved').textContent=history.length;$('statSaved').textContent=saved.length}
+
+$('themeBtn').onclick=()=>{document.body.classList.toggle('light');localStorage.setItem('rudra_theme',document.body.classList.contains('light')?'light':'dark')}
+$('logoutBtn').onclick=logout;
+document.querySelectorAll('[data-page]').forEach(b=>b.onclick=()=>go(b.dataset.page));
+fillClasses();renderSubjects();updateStats();
+if(localStorage.getItem('rudra_theme')==='light')document.body.classList.add('light');
+
+if(rudraFirebaseAuth){
+ rudraFirebaseAuth.onAuthStateChanged(user=>{
+  if(user){
+   profile={...profile,email:user.email,guest:false,name:profile?.name||user.email.split('@')[0],classNumber:profile?.classNumber||6,medium:profile?.medium||'English Medium',language:profile?.language||'English',goal:profile?.goal||'General Study'};
+   saveProfile();$('auth').classList.add('hidden');
+  }else if(!profile?.guest){
+   $('auth').classList.remove('hidden');
+   authTab('login');
+  }
+ });
+}else{
+ $('auth').classList.remove('hidden');
+ authMessage('Firebase load nahi hua. Internet check karo.');
+}
+if(profile?.guest){$('auth').classList.add('hidden');saveProfile()}
+else if(!profile?.email && rudraFirebaseAuth){$('auth').classList.remove('hidden');authTab('login')}
+if(profile?.email)$('loginEmail').value=profile.email;
+
+$('loginEmail').addEventListener('keydown',e=>{if(e.key==='Enter')login()});
+$('loginPass').addEventListener('keydown',e=>{if(e.key==='Enter')login()});
+$('newPass').addEventListener('keydown',e=>{if(e.key==='Enter')signup()});
+</script>
+</body>
+</html>

@@ -234,34 +234,71 @@ function localSolve(q){
  return `Rudra AI — ${selected}\n\nSend the complete question. AI connection will be added after the Firebase/login system is confirmed working.`;
 }
 async function solve(){
- const q=$('question').value.trim();
- if(!q&&!selectedFile)return toast('Type a question or choose a photo.');
- const btn=$('solveBtn');
- btn.disabled=true;
- btn.textContent='⏳ Solving...';
- $('answer').innerHTML='<div class="bubble">🤖 Rudra AI is thinking...</div>';
- try{
-  const response=await fetch('https://edumind-backend-71oq.onrender.com/api/ask',{
-   method:'POST',
-   headers:{'Content-Type':'application/json'},
-   body:JSON.stringify({question:q||'Please explain this question from the uploaded photo.'})
-  });
-  const data=await response.json();
-  if(!response.ok)throw new Error(data.error||'AI request failed.');
-  const ans=data.answer||'AI did not return an answer.';
-  $('answer').innerHTML=`<div class="bubble">${esc(ans)}</div><div class="controls"><button class="btn" onclick="speakLast()">🔊 Read aloud</button><button class="btn" onclick="copyLast()">📋 Copy</button><button class="btn green" onclick="saveLast()">⭐ Save</button></div>`;
-  window.lastAnswer=ans;
-  window.lastQuestion=q||selectedFile?.name||'Photo question';
-  history.unshift({q:window.lastQuestion,a:ans,subject:selected,time:new Date().toLocaleString()});
-  history=history.slice(0,100);
-  localStorage.setItem('rudra_history',JSON.stringify(history));
-  updateStats();
- }catch(e){
-  $('answer').innerHTML='<div class="bubble">❌ '+esc(e.message)+'</div>';
- }finally{
-  btn.disabled=false;
-  btn.textContent='✨ Rudra Solve';
- }
+  const q = $('question').value.trim();
+
+  if(!q && !selectedFile){
+    return toast('Question ya photo choose karo.');
+  }
+
+  $('aiBadge').textContent = 'AI solving...';
+  $('solveBtn').disabled = true;
+
+  try{
+    let image = null;
+
+    if(selectedFile){
+      image = await new Promise((resolve,reject)=>{
+        const reader = new FileReader();
+
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => reject(new Error('Photo read failed.'));
+
+        reader.readAsDataURL(selectedFile);
+      });
+    }
+
+    const response = await fetch(
+      'https://edumind-backend-71oq.onrender.com/api/ask',
+      {
+        method:'POST',
+        headers:{
+          'Content-Type':'application/json'
+        },
+        body:JSON.stringify({
+          question: q || 'Read the question in this photo and solve it.',
+          image: image
+        })
+      }
+    );
+
+    const data = await response.json();
+
+    if(!response.ok){
+      throw new Error(data.error || 'AI request failed.');
+    }
+
+    const answer = data.answer || 'No answer received.';
+
+    $('answerBox').textContent = answer;
+    $('aiBadge').textContent = 'AI connected';
+
+    history.unshift({
+      question: q || 'Photo Question',
+      answer: answer,
+      time: new Date().toLocaleString()
+    });
+
+    localStorage.setItem('history', JSON.stringify(history));
+
+    toast('✅ Rudra AI solved it!');
+
+  }catch(error){
+    console.error(error);
+    $('aiBadge').textContent = 'AI error';
+    toast(error.message || 'AI error.');
+  }finally{
+    $('solveBtn').disabled = false;
+  }
 }
 function saveLast(){if(!window.lastAnswer)return;saved.unshift({q:window.lastQuestion,a:window.lastAnswer,subject:selected,time:new Date().toLocaleString()});saved=saved.slice(0,100);localStorage.setItem('rudra_saved',JSON.stringify(saved));updateStats();toast('Saved!')}
 function copyLast(){if(window.lastAnswer&&navigator.clipboard)navigator.clipboard.writeText(window.lastAnswer).then(()=>toast('Copied'))}
